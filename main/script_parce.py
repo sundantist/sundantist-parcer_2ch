@@ -33,19 +33,20 @@ def parse_image_urls(classes, location, source):
 # Метод проверки "нового" треда
 def check_tread(number_of_tread):
     if number_of_tread in tread_list:
-        return(False)
+        return(True)
     else:
         tread_list.append(number_of_tread)
-        return(True)
+        return(False)
 
 # Метод для парсинга номера треда
 
 def parse_number_of_tread(classes, location, source):
-    for a in soup.findAll(attrs={"id": classes}):
+    for a in soup.findAll(attrs={"class": classes}):
         name = a.find(location)
-        print("\n \n \n", name)
-        if name not in tread:
-            tread.append(name.get(source))
+        #if name not in tread:
+        #    tread.append(name.get(source)) # Не очень понятно нахуя мне нужны эти две строчки, пока пусть будут
+        #print("\n", name.get(source))
+        return(name.get(source))
 
 #def parse_number_of_tread():
 #    xpath = ""
@@ -76,6 +77,10 @@ while True:
     if new_height == last_height:
         break  # Если высота страницы не меняется, это означает, что прокрутка достигла низа.
     last_height = new_height
+
+# Отладочное говно
+
+print("\n\n\n\n",tread_list)
 
 # Записываем эту поеботу в CSV
 
