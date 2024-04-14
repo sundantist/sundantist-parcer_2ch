@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 options = ChromeOptions()
@@ -15,8 +16,13 @@ driver = webdriver.Chrome(options=options)
 
 driver.get("https://2ch.hk/h/")
 results = []
+tread_list = []
+tread = []
 content = driver.page_source
 soup = BeautifulSoup(content, "html.parser")
+
+
+# Метод парсинга картинок без запросов
 
 def parse_image_urls(classes, location, source):
     for a in soup.findAll(attrs={"class": classes}):
@@ -24,20 +30,43 @@ def parse_image_urls(classes, location, source):
         if name not in results:
             results.append("2ch.hk" + name.get(source))
 
+# Метод проверки "нового" треда
+def check_tread(number_of_tread):
+    if number_of_tread in tread_list:
+        return(False)
+    else:
+        tread_list.append(number_of_tread)
+        return(True)
+
+# Метод для парсинга номера треда
+
+def parse_number_of_tread(classes, location, source):
+    for a in soup.findAll(attrs={"id": classes}):
+        name = a.find(location)
+        print("\n \n \n", name)
+        if name not in tread:
+            tread.append(name.get(source))
+
+#def parse_number_of_tread():
+#    xpath = ""
+#    element = driver.find_element(By.XPATH, xpath)
+#    print("АБОБА", element)
+
 #Прокрутка страницы с бесконечной загрузкой
 
 last_height = driver.execute_script("return document.body.scrollHeight")
 while True:
 
-# Прожимаем кнопки для раскрытия тредов ??????????????????????? АЛЯРМ ВАРНИНГ ОПАСНО СУКА НЕ РАБОТАТЬ НИХУЯ
-    
-    element_data = "#icon__expand"
-    driver.find_element(By.XPATH, "element_data").click()
-
-
 # Парсим это говно и получаем URL пикчи
 
-    parse_image_urls("post__image-link", "img", "data-src")
+    if check_tread(parse_number_of_tread("thread", "div", "data-num")):
+        print(parse_number_of_tread("thread", "div", "data-num"))
+        parse_image_urls("post__image-link", "img", "data-src")
+        print("Все заебись, ебошим")
+    else:
+        print("Чет не так :(")
+    
+
 
 # Пролистываем "бесконечную" страницу
 
