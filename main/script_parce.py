@@ -43,9 +43,10 @@ def check_tread(number_of_tread):
 def parse_number_of_tread(classes, location, source):
     for a in soup.findAll(attrs={"class": classes}):
         name = a.find(location)
-        #if name not in tread:
-        #    tread.append(name.get(source)) # Не очень понятно нахуя мне нужны эти две строчки, пока пусть будут
-        #print("\n", name.get(source))
+        if name not in tread:
+            tread.append(name.get(source)) # Не очень понятно нахуя мне нужны эти две строчки, пока пусть будут
+            print("\n", name)
+            print("\n", name.get(source))
         return(name.get(source))
 
 #def parse_number_of_tread():
