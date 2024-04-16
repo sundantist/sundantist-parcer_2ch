@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-#import json
+import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,7 +19,7 @@ results = []
 tread_list = []
 tread = []
 content = driver.page_source
-soup = BeautifulSoup(content, "html.parser")
+soup = BeautifulSoup(content, 'lxml')
 
 
 # Метод парсинга картинок без запросов
@@ -41,12 +41,12 @@ def check_tread(number_of_tread):
 # Метод для парсинга номера треда
 
 def parse_number_of_tread(classes, location, source):
-    for a in soup.findAll(attrs={"class": classes}):
+    for a in soup.findAll('p', attrs={"class": "thread"}):
         name = a.find(location)
         if name not in tread:
             tread.append(name.get(source)) # Не очень понятно нахуя мне нужны эти две строчки, пока пусть будут
-            print("\n", name)
-            print("\n", name.get(source))
+        print("\n", name)
+        print("\n", name.get(source))
         return(name.get(source))
 
 #def parse_number_of_tread():
@@ -61,19 +61,19 @@ while True:
 
 # Парсим это говно и получаем URL пикчи
 
-    if check_tread(parse_number_of_tread("thread", "div", "data-num")):
-        print(parse_number_of_tread("thread", "div", "data-num"))
-        parse_image_urls("post__image-link", "img", "data-src")
-        print("Все заебись, ебошим")
-    else:
-        print("Чет не так :(")
-    
+    print(parse_number_of_tread("thread", "div", "id"))
 
+#    if check_tread(parse_number_of_tread("thread", "div", "data-num")):
+#        print(parse_number_of_tread("thread", "div", "data-num"))
+#        parse_image_urls("post__image-link", "img", "data-src")
+#        print("Все заебись, ебошим")
+#    else:
+#        print("Чет не так :(")
 
 # Пролистываем "бесконечную" страницу
 
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)  # Необходимо дать время для загрузки страницы через AJAX.
+    time.sleep(4)  # Необходимо дать время для загрузки страницы через AJAX.
     new_height = driver.execute_script("return document.body.scrollHeight")
     if new_height == last_height:
         break  # Если высота страницы не меняется, это означает, что прокрутка достигла низа.
